@@ -1,0 +1,9 @@
+# 전부 제외
+*
+
+# _ai_context 폴더만 추적
+!_ai_context/
+!_ai_context/**
+
+# .gitignore 자체는 포함
+!.gitignore
