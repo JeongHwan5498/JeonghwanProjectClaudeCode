@@ -22,7 +22,7 @@
 ### 수정 파일: `login_debug.py`
 
 - 초기: 자동 네이버 로그인 디버깅 스크립트
-- 현재: 수동 로그인 후 storageState 저장용 (현재는 scraper에 통합되어 미사용)
+- 현재: 수동 로그인 + Enter 후 세션 저장 (현재는 scraper에 통합되어 미사용)
 
 ### 설치한 패키지/도구
 
@@ -33,6 +33,13 @@ winget install UB-Mannheim.TesseractOCR
 # kor.traineddata 한국어 팩 수동 설치
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 ```
+
+### GitHub 연동 [2026-06-16]
+
+- `_ai_context/` 폴더만 추적, 나머지 전부 .gitignore 제외
+- remote: https://github.com/JeongHwan5498/JeonghwanProjectClaudeCode
+- `sync.ps1`: 작업 종료 시 자동 커밋 + push 스크립트
+- Claude Code가 작업 종료 시 자동으로 실행
 
 ### 실행 방법
 
@@ -45,6 +52,7 @@ python fanding_scraper.py
 ### 테스트 결과
 
 - 로그인: ✅ 수동 로그인 후 Enter로 정상 진행 확인
-- 포스트 목록: 🔄 실제 수집 수 미검증 (0개 이슈 있었음, 수정 후 미확인)
+- 포스트 목록: 🔄 실제 수집 수 미검증
 - 이미지 다운로드: 🔄 실제 실행 후 확인 필요
 - OCR: ✅ Tesseract 작동 확인, 현재 비활성화 상태
+- GitHub push: ✅ master 브랜치 연결 완료
