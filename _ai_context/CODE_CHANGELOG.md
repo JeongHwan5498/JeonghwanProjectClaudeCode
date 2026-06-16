@@ -4,7 +4,7 @@
 
 ## [2026-06-16] 초기 버전 → 현재 버전 (대규모 리팩토링)
 
-### 수정 파일: `fanding_scraper.py`
+### 수정 파일: `scraper.py`
 
 | 변경 항목 | 내용 |
 |----------|------|
@@ -21,7 +21,7 @@
 
 ### 수정 파일: `login_debug.py`
 
-- 초기: 자동 네이버 로그인 디버깅 스크립트
+- 초기: 소셜 로그인 자동화 디버깅 스크립트
 - 현재: 수동 로그인 + Enter 후 세션 저장 (현재는 scraper에 통합되어 미사용)
 
 ### 설치한 패키지/도구
@@ -45,8 +45,8 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 
 ```powershell
 cd "C:\Users\user\Desktop\Claude Code\1. 세상학개론 프로젝트"
-python fanding_scraper.py
-# 브라우저에서 네이버 소셜 로그인 완료 후 Enter
+python scraper.py
+# 브라우저에서 소셜 로그인 완료 후 Enter
 ```
 
 ### 테스트 결과
