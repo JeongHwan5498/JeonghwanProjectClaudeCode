@@ -21,14 +21,21 @@ Playwright(Firefox) + Python 3.8로 스크래퍼를 구현했고, 현재 실제 
 4. 터미널에서 Enter → 자동으로 포스트 수집 시작
 5. 결과는 `00_Posts/YYYY-MM-DD_제목/` 폴더에 저장
 
+**Vision 변환 흐름**:
+1. `python scraper.py` → `00_Posts/` 수집 완료
+2. `.env` 파일에 `XAI_API_KEY=...` 설정
+3. `python convert_to_markdown.py` → 각 포스트 폴더에 `post_refined.md` 생성
+
 **저장 구조**:
 ```
 00_Posts/
+  _post_list.json           ← 포스트 목록 + post_id 캐시
   2026-06-16_포스트제목/
-    post.md          ← 본문 + 이미지 링크
-    metadata.json    ← 전체 메타데이터 (이미지 다운로드 결과 포함)
-    images/          ← 원본 이미지
-    ocr/             ← OCR 결과 txt (현재 비활성화)
+    post.md                 ← 원본 본문 (frontmatter에 post_id 포함)
+    post_refined.md         ← grok-4 Vision 정제 결과
+    metadata.json           ← post_id + 이미지 다운로드 결과 등 전체 메타데이터
+    images/                 ← 원본 이미지
+    ocr/                    ← OCR 결과 txt (현재 비활성화)
 ```
 
 ---
@@ -42,6 +49,8 @@ Playwright(Firefox) + Python 3.8로 스크래퍼를 구현했고, 현재 실제 
 | Firefox 사용 | Chromium이 Windows 환경에서 spawn UNKNOWN 오류 |
 | 포스트 목록 캐시 | `_post_list.json` 저장, 재실행 시 재계산 안 함 |
 | 재실행 안전 | 완료된 폴더 스킵, OCR 미완료만 재처리 |
+| post_id 부여 | 폴더명(날짜+제목)만으론 WorldModel evidence 연결 불가 → post_0001~으로 고정 ID |
+| Vision API: xAI grok-4 | convert_to_markdown.py로 이미지+본문 → 정제 마크다운 변환 |
 
 ---
 
@@ -49,16 +58,16 @@ Playwright(Firefox) + Python 3.8로 스크래퍼를 구현했고, 현재 실제 
 
 1. **포스트 목록 수집 검증**: 실제 실행 시 포스트가 정상적으로 탐지되는지 확인
    - 과거에 `총 0개 포스트 발견` 이슈 있었음
-   - 현재 코드는 복수 URL 패턴 탐색하도록 수정됨
 2. **이미지 다운로드 성공률 확인**: lazy loading 처리 여부
+3. **XAI_API_KEY 발급 후 convert_to_markdown.py 실행** 검증
 
 ---
 
 ## 다음 단계 (우선순위 순)
 
 1. 실제 실행 → 포스트/이미지 수집 확인
-2. `ocr_runner.py` 작성 (수집된 이미지에 OCR만 별도 실행)
-3. Vision API 연동 (차트/표 → GPT-4o 또는 Claude Vision 해석)
+2. `convert_to_markdown.py` 실행 (API 키 필요)
+3. `ocr_runner.py` 작성 (수집된 이미지에 OCR만 별도 실행)
 
 ---
 
@@ -68,13 +77,15 @@ Playwright(Firefox) + Python 3.8로 스크래퍼를 구현했고, 현재 실제 
 - Python: 3.8 (`C:\Program Files\Python38\python.exe`)
 - 브라우저: Playwright Firefox
 - OCR: Tesseract 5.4.0, 한국어 팩 포함
+- Vision: xAI grok-4 (`https://api.x.ai/v1`) — `.env`에 `XAI_API_KEY` 필요
 - GitHub: https://github.com/JeongHwan5498/JeonghwanProjectClaudeCode
 
 ---
 
 ## 핵심 파일
 
-- `scraper.py` — 메인 스크래퍼
-- `login_debug.py` — 로그인 디버깅용 (현재 미사용)
+- `scraper.py` — 메인 스크래퍼 (post_id 자동 부여 포함)
+- `convert_to_markdown.py` — grok-4 Vision으로 post_refined.md 생성
+- `.env.example` — API 키 예시
 - `00_Posts/_post_list.json` — 포스트 목록 캐시 (삭제하면 재수집)
 - `_ai_context/` — 이 문서들이 있는 폴더
